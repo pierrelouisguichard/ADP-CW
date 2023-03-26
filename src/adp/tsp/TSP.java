@@ -32,29 +32,17 @@ public class TSP {
     this.listener = listener;
   }
 
-  public void processQueue(int[] indexes) {
-    try {
-      SwingUtilities.invokeAndWait(() -> processRoute(indexes));
-    } catch (InterruptedException | InvocationTargetException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   public void cancelled() {
     this.cancelled = !cancelled;
   }
 
   public void findShortestRoute() {
-
     final int[] indexes = new int[this.locations.length];
     for (int i = 0; i < indexes.length; i++) {
       indexes[i] = i;
     }
-
     final int[] c = new int[indexes.length];
-
-    processQueue(indexes);
-
+    processRoute(indexes);
     int i = 1;
     while(i < indexes.length && !cancelled) {
       if (c[i] < i) {
@@ -63,7 +51,7 @@ public class TSP {
         } else {
           swap(indexes, c[i], i);
         }
-        processQueue(indexes);
+        processRoute(indexes);
         c[i] += 1;
         i = 1;
       } else {
@@ -72,9 +60,10 @@ public class TSP {
       } 
     }
 
-    this.listener.displayBest( this.bestRoute);
+    bestQueue();
     System.out.println( "TSP all done!");
   }
+
 
   public static void swap(final int[] array, final int p, final int q) {
     final int s = array[p];
@@ -92,7 +81,23 @@ public class TSP {
       if ((this.bestRoute == null) || (route.distance() < this.bestRoute.distance())) {
         this.bestRoute = route;
       }
-      this.listener.displayUpdate(route, this.bestRoute);
+      updateQueue(route);
+    }
+  }
+
+  public void bestQueue() {
+    try {
+      SwingUtilities.invokeAndWait(() -> this.listener.displayBest(this.bestRoute));
+    } catch (InterruptedException | InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void updateQueue(TSPRoute route) {
+    try {
+      SwingUtilities.invokeAndWait(() -> this.listener.displayUpdate(route, this.bestRoute));
+    } catch (InterruptedException | InvocationTargetException e) {
+      throw new RuntimeException(e);
     }
   }
 

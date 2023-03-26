@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.SortedSet;
@@ -42,10 +44,12 @@ public class TSPUi extends JFrame {
   public void cancelled() {
     this.cancelled = !cancelled;
   }
+
      
   public TSPUi(final int width, final int height) {
+
     setDefaultCloseOperation(EXIT_ON_CLOSE);
- 
+
     this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);    
     this.imagePanel.setImage(this.image);
     
@@ -120,6 +124,7 @@ public class TSPUi extends JFrame {
   }
   
   private void showLongestToShortest() {
+    this.imagePanel.resetPaintCallCounter();
     this.replayButton.setEnabled(false);
     this.cancelButton.setEnabled(true);
     this.goButton.setEnabled(false);
